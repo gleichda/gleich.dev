@@ -324,5 +324,3 @@ I know this is not really pretty but at least it works.
 When cloud build runs it automatically deploys and gives you a URL.
 But with Cloud Run it is now also possible to use your own domain.
 And you get a Let's Encrypt SSL Certificate automatically and fully managed.
-
-## Use your own Domain
