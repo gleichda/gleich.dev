@@ -5,6 +5,8 @@ additional_cmd=""
 
 if [[ "${ENV}" == "dev" ]]; then
     additional_cmd="-D"
+elif [[ "${ENV}" == "prod" ]]; then
+    additional_cmd="--environment production"
 fi
 
 if [[ -n "$URL" ]]; then
