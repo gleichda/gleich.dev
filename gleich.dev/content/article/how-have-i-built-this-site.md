@@ -306,7 +306,7 @@ So long a little workaround helps:
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
         gcloud beta run deploy dev-<MYSITE> --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=dev,URL=https://test.<MYSITE>/ \
-        --memory=256Mi --allow-unauthenticated #Opitonally: remove allow unauthenticated for having a private test instance
+        --memory=256Mi --allow-unauthenticated
   - id: Deploy prod
     name: gcr.io/cloud-builders/gcloud
     entrypoint: bash

@@ -23,7 +23,7 @@ steps:
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
         gcloud beta run deploy dev-gleichdev --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=dev,URL=https://test.gleich.dev/ \
-        --memory=256Mi
+        --allow-unauthenticated --memory=256Mi 
   - id: Deploy prod
     name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
