@@ -1,0 +1,18 @@
+steps:
+  - id: Add submodules
+    name: gcr.io/cloud-builders/git
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        git submodule init && \
+        git submodule update
+  - id: Build dockerfile
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
+      - --file=build/Dockerfile
+      - .
+images:
+  - gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
