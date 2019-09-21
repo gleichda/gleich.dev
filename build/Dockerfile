@@ -6,7 +6,10 @@ RUN  tar -xvzf hugo_${HUGO_VERSION}_Linux-64bit.tar.gz -C /
 
 FROM alpine:latest
 ENV PORT 8080
-COPY --from downloader /hugo /usr/bin/hugo
+RUN apk add --no-cache ca-certificates
+COPY --from=downloader /hugo /usr/bin/hugo
 COPY gleich.dev /gleich.dev
 COPY build/run.sh /run.sh
-CMD ['/run.sh']
+RUN chmod +x /run.sh
+WORKDIR /gleich.dev
+ENTRYPOINT '/run.sh'

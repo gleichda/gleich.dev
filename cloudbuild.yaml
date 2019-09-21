@@ -4,7 +4,34 @@ steps:
     args:
       - build
       - --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
+      - --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
+      - --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest
       - --file=build/Dockerfile
       - .
+  - id: Push Image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
+  - id: Deploy dev
+    name: gcr.io/cloud-builders/gcloud
+    args:
+      - 'beta'
+      - 'run'
+      - 'deploy'
+      - 'dev-gleichdev'
+      - '--image'
+      - 'gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}'
+      - '--region'
+      - 'europe-west1'
+      - '--platform'
+      - 'managed'
+      - '--set-env-vars=ENV=dev,URL=https://test.gleich.dev/'
+      - '--allow-unauthenticated'
+      - '--verbosity=debug'
+
 images:
   - gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
+  - gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
+  - gcr.io/${PROJECT_ID}/gleich.dev:latest
+  
