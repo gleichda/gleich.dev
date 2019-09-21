@@ -126,6 +126,94 @@ git add <MYSITE>/*
 git commit -m 'My first working site'
 ```
 
-## Create a Cloud Build
+## Setup the build
 
-In your
+I have my build stuff in a separate directory called `build` except for the Cloud Build as the GitHub App for Cloud Build expects it in the root folder.
+So my repo looks like:
+```
+.
+├── build
+│   ├── Dockerfile
+│   └── run.sh
+├── cloudbuild.yaml
+├── <MYSITE>
+│   ├── archetypes
+│   ├── config.toml
+│   ├── content
+│   ├── data
+│   ├── layouts
+│   ├── resources
+│   ├── static
+│   └── themes
+└── README.md
+```
+
+### Create a small run.sh
+
+Currently Cloud Run is always using Port 8080. But it also can inject another port as the
+As Cloud Run can inject the port as env variable `PORT` we need to create a small script that starts hugo on the port that gets injected:
+
+```bash
+#! /bin/sh
+
+/usr/bin/hugo serve --port ${PORT}
+```
+
+Make the script executable:
+
+```
+chmod +x bin/run.sh
+```
+
+### Create some Dockerfile
+
+In the build directory create a `Dockerfile`
+
+```Dockerfile
+FROM gcr.io/cloud-builders/git as downloader
+ARG HUGO_VERSION="0.58.3"
+
+ADD https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz /
+RUN  tar -xvzf hugo_${HUGO_VERSION}_Linux-64bit.tar.gz -C /
+
+FROM alpine:latest
+ENV PORT 8080
+COPY --from downloader /hugo /usr/bin/hugo
+COPY <MYSITE> /<MYSITE>
+COPY build/run.sh /run.sh
+```
+
+To minimize the size and the number of layers of the Docker image I'm using a separate image for downloading and extracting.
+
+For an easy local running I'm adding the environment variable `PORT` with a suitable value.
+If this changes it will be overwritten on the container startup by Google Cloud Run.
+
+### Create a Cloud Build
+
+In the root of your git directory create a `cloudbuild.yaml`.
+
+```yaml
+steps:
+  - id: Add submodules
+    name: gcr.io/cloud-builders/git
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        git submodule init && \
+        git submodule update
+  - id: Build dockerfile
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --tag=gcr.io/${PROJECT_ID}/<MYSITE>:${BRANCH_NAME}
+      - --file=build/Dockerfile
+      - .
+images:
+  - gcr.io/${PROJECT_ID}/<MYSITE>:${BRANCH_NAME}
+```
+
+In the first step it is downloading the theme we have added as a submodule.
+In the second step it is building the image.
+
+With the `images:` Cloud Build knows what artifacts are created and pushes the Image to the Container Registry.
