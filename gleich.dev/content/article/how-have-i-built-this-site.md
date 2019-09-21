@@ -1,7 +1,7 @@
 ---
 title: "How Have I Built This Site"
 date: 2019-09-21T11:29:45+02:00
-draft: true
+draft: false
 ---
 
 This side is served using [Google Cloud Run](https://cloud.google.com/run/) and created with [Hugo](https://gohugo.io/).
