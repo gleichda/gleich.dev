@@ -218,10 +218,12 @@ If this changes it will be overwritten on the container startup by Google Cloud 
 ### Create and prepare your Google Project
 
 Go to the [Google Cloud Platform](https://console.cloud.google.com) and create your project.
+
 ![New Project](/img/new-project.png)
 
 Enable the Cloud Build and Cloud Run API.
 For that open the Hamburger Menu on the left side and click on `Cloud Build`.
+
 ![Cloud Build API](/img/cloud-build-api.png)
 
 For Cloud Run its a bit different.
