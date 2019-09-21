@@ -166,7 +166,7 @@ additional_cmd=""
 if [[ "${ENV}" == "dev" ]]; then
   # Builds also the drafts
   additional_cmd="-D"
-elif [[ "${ENV}" == "prod" ]]
+elif [[ "${ENV}" == "prod" ]]; then
   # Sets the production environment
   additional_cmd="--environment production"
 fi

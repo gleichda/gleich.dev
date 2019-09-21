@@ -5,7 +5,7 @@ additional_cmd=""
 
 if [[ "${ENV}" == "dev" ]]; then
     additional_cmd="-D"
-elif [[ "${ENV}" == "prod" ]]
+elif [[ "${ENV}" == "prod" ]]; then
     additional_cmd="--environment production"
 fi
 
