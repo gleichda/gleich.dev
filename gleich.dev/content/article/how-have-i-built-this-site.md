@@ -1,7 +1,7 @@
 ---
 title: "How Have I Built This Site"
 date: 2019-09-21T11:29:45+02:00
-draft: true
+draft: false
 ---
 
 This side is served using [Google Cloud Run](https://cloud.google.com/run/) and created with [Hugo](https://gohugo.io/).
@@ -324,3 +324,20 @@ I know this is not really pretty but at least it works.
 When cloud build runs it automatically deploys and gives you a URL.
 But with Cloud Run it is now also possible to use your own domain.
 And you get a Let's Encrypt SSL Certificate automatically and fully managed.
+
+## Use your custom Domain
+
+When you deploy that function you get a .run.app URL from Google.
+But it is also possible to add your own domain.
+
+On the [Cloud Run Page](https://console.cloud.google.com/run) there is a button `Manage Custom Domains` in the top menu.
+Click it. If you haven't verified the ownership of that domain you have to do that first.
+
+Afterwards click the button `Add Mapping`. Then select the corresponting Cloud Run Service and the (sub-)domain you want to use.
+Leave it blank for no subdomain.
+
+On the next page you get a prompt what you have to update.
+Depending on if it is a root level domain or a sub domain it's either updating the A and AAA records or adding a CNAME.
+
+This step you have to do with your provider.
+Which can also be Google but does not need to be.
