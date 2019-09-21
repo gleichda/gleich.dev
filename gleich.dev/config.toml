@@ -1,0 +1,16 @@
+baseURL = "http://example.org/"
+languageCode = "en-us"
+title = "About Me"
+
+
+theme = "m10c"
+[params]
+  author = "David Gleich"
+  description = "This is my small site. I'm a 25 year programmer/system engineer working at MediaMarktSaturn in Ingolstadt"
+
+    [[params.social]]
+        name = "github"
+        url = "https://github.com/gleichda"
+    [[params.social]]
+        name = "medium"
+        url = "https://medium.com/@themirgleich"
