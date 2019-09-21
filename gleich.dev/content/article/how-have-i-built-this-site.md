@@ -306,7 +306,7 @@ So long a little workaround helps:
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
         gcloud beta run deploy dev-<MYSITE> --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=dev,URL=https://test.<MYSITE>/ \
-        --allow-unauthenticated --memory=256Mi
+        --memory=256Mi --allow-unauthenticated #Opitonally: remove allow unauthenticated for having a private test instance
   - id: Deploy prod
     name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
@@ -324,3 +324,5 @@ I know this is not really pretty but at least it works.
 When cloud build runs it automatically deploys and gives you a URL.
 But with Cloud Run it is now also possible to use your own domain.
 And you get a Let's Encrypt SSL Certificate automatically and fully managed.
+
+## Use your own Domain
