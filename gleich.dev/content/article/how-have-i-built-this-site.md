@@ -8,7 +8,10 @@ This side is served using [Google Cloud Run](https://cloud.google.com/run/) and 
 All the development was done via [Google Cloud Shell](https://cloud.google.com/shell/) with my [custom Google Cloud Shell Image](https://github.com/gleichda/cloud-shell).
 This custom image contains [code-server](https://github.com/cdr/code-server) and now also [Hugo](https://github.com/gohugoio/hugo).
 
-There are already some other tutorials using Hugo an Nginx. But most of them are using the port 8080 hardcoded. According to Google the container must listen to the environment variable `PORT`. I've also posted that article on Medium. Just have a look to my Medium page which is linked in the left side.
+There are already some other tutorials using Hugo an Nginx. But most of them are using the port 8080 hardcoded.
+According to Google the container must listen to the environment variable `PORT`.
+
+I've also posted that article on Medium. Just have a look to my Medium page which is linked in the left side.
 
 ## Install Hugo
 
@@ -343,5 +346,5 @@ Leave it blank for no subdomain.
 On the next page you get a prompt what you have to update.
 Depending on if it is a root level domain or a sub domain it's either updating the A and AAA records or adding a CNAME.
 
-This step you have to do with your provider.
+This step you have to do with your domain registrar.
 Which can also be Google but does not need to be.
