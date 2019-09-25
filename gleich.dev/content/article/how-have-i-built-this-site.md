@@ -1,17 +1,23 @@
 ---
 title: "How Have I Built This Site"
-date: 2019-09-21T11:29:45+02:00
+date: 2019-09-21T22:29:45+02:00
 draft: false
 ---
 
 This side is served using [Google Cloud Run](https://cloud.google.com/run/) and created with [Hugo](https://gohugo.io/).
 All the development was done via [Google Cloud Shell](https://cloud.google.com/shell/) with my [custom Google Cloud Shell Image](https://github.com/gleichda/cloud-shell).
-This custom image contains [code-server](https://github.com/cdr/code-server) and now also [Hugo](https://github.com/gohugoio/hugo)
+This custom image contains [code-server](https://github.com/cdr/code-server) and now also [Hugo](https://github.com/gohugoio/hugo).
+
+There are already some other tutorials using Hugo an Nginx. But most of them are using the port 8080 hardcoded.
+According to Google the container must listen to the environment variable `PORT`.
+
+I've also posted that article on Medium. Just have a look to my Medium page which is linked in the left side.
 
 ## Install Hugo
 
 Hugo has some good [documentation](https://gohugo.io/getting-started/installing/) how to install it. 
 So I won't tell you that by myself.
+
 Have a look into my personal Google Cloud Shell image if you want to get some inspiration how to get Hugo into a Docker container.
 
 Afterwards verify the installation with:
@@ -46,7 +52,7 @@ Open the Preview on port 8080. If you get an `Not Found` error just remove the `
 ## Create your site with Hugo
 
 Open another Cloud Shell instance and navigate your git repository.
-Then create the site with hugo.
+Then create the site with Hugo.
 
 ```
 hugo new site <YOUR SITE>
@@ -70,7 +76,7 @@ Add the theme to your theme path (I did it a bit different ):
 git subtree add --prefix <MYSITE>/themes/m10c https://github.com/vaga/hugo-theme-m10c.git master
 ```
 
-Add the theme specific config tou your `config.toml` via code server:
+Add the theme specific config to your `config.toml` via code server:
 
 ```
 languageCode = "en-us"
@@ -78,6 +84,7 @@ title = "My Site"
 relativeURLs = true
 canonifyURLs = false
 
+## Theme config
 theme = "m10c"
 [params]
   author = "YOU"
@@ -96,7 +103,7 @@ Start the Hugo server on a port above 2000 (I use 2345):
 hugo serve --port 2345 -D
 ```
 
-The `-D` also serves the draft content.
+The `-D` also serves the draft content which is useful for creating new content.
 Change the Port on the web preview to 2345 and open the preview.
 
 ![Change Port and Open Web Preview](/img/cloud-shell-preview.png)
@@ -116,7 +123,7 @@ Reload the preview from Hugo and you should see the new post.
 Now you can edit the file in `content/posts/my-first-post.md` and everytime you save Hugo will detect
 and when you reload the page it will serve the latest content.
 The only thing I did not get to work so far is LiveReload.
-But to be honest I haven't invested much time in it.
+But to be honest I haven't invested much time in doing that.
 
 ## Commit your changes to GitHub
 
@@ -293,7 +300,7 @@ And set the two roles to enabled.
 ### Connect your GitHub Repo with Cloud Build
 
 Go to the [Google Cloud Build Marketplace App](https://github.com/marketplace/google-cloud-build) and configure it.
-After authotizing Google Cloud for accessing your GitHub repository you configure you can link you repo to your Build.
+After authotizing Google Cloud for accessing your GitHub repository you can link your repo to your Build.
 
 ![Cloud Build API](/img/cloud-build-github.png)
 
@@ -302,7 +309,7 @@ Now after every commit you will get the latest version installed automatically.
 To not deploy to production every time. I've setup two Cloud Run instances.
 One for dev and one for prod.
 To deploy depending on the branch you need a little workaround.
-There is an [issue](https://issuetracker.google.com/issues/124468298) opened already at the issuetracker.
+There is an [issue](https://issuetracker.google.com/issues/124468298) opened already at Google's issuetracker.
 Let's hope that gets done soon.
 So long a little workaround helps:
 ```yaml
@@ -314,7 +321,7 @@ So long a little workaround helps:
       - | 
         echo "Check if "${BRANCH_NAME}" is valid for dev deployment"
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
-        gcloud beta run deploy dev-<MYSITE> --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
+        gcloud beta run deploy dev-<MYSITE> --image gcr.io/${PROJECT_ID}/<MYSITE>:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=dev,URL=https://test.<MYSITE>/ \
         --memory=256Mi --allow-unauthenticated
   - id: Deploy prod
@@ -325,7 +332,7 @@ So long a little workaround helps:
       - | 
         echo "Check if "${BRANCH_NAME}" is valid for prod deployment"
         [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod deployment"; exit 0; };
-        gcloud beta run deploy <MYSITE> --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
+        gcloud beta run deploy <MYSITE> --image gcr.io/${PROJECT_ID}/<MYSITE>:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=prod,URL=https://<MYSITE>/ \
         --allow-unauthenticated --memory=256Mi
 ```
@@ -333,7 +340,7 @@ I know this is not really pretty but at least it works.
 
 When cloud build runs it automatically deploys and gives you a URL.
 But with Cloud Run it is now also possible to use your own domain.
-And you get a Let's Encrypt SSL Certificate automatically and fully managed.
+And you get a Let's Encrypt SSL Certificate automatically and it is fully managed.
 
 ## Use your custom Domain
 
@@ -343,11 +350,11 @@ But it is also possible to add your own domain.
 On the [Cloud Run Page](https://console.cloud.google.com/run) there is a button `Manage Custom Domains` in the top menu.
 Click it. If you haven't verified the ownership of that domain you have to do that first.
 
-Afterwards click the button `Add Mapping`. Then select the corresponting Cloud Run Service and the (sub-)domain you want to use.
+Afterwards click the button `Add Mapping`. Then select the corresponding Cloud Run Service and the (sub-)domain you want to use.
 Leave it blank for no subdomain.
 
 On the next page you get a prompt what you have to update.
 Depending on if it is a root level domain or a sub domain it's either updating the A and AAA records or adding a CNAME.
 
-This step you have to do with your provider.
+This step you have to do with your domain registrar.
 Which can also be Google but does not need to be.
