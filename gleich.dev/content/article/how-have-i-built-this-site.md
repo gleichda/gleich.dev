@@ -289,7 +289,7 @@ I'm also creating some more image tags as especially the branch name is often us
 
 ### Allow Cloud Build to deploy to your Cloud Run
 
-By default the Cloud Build Service Account does not have the rights to create new Cloud Run Servides or create new Revisions of existing Services.
+By default the Cloud Build Service Account does not have the rights to create new Cloud Run Services or create new Revisions of existing Services.
 Therefor you have to grant the Cloud Build Service Account the `Cloud Run Admin` and the `Service Account User` rights.
 To do that go to the `Settings` section for `Cloud Build` in the Google Cloud Console.
 And set the two roles to enabled.
