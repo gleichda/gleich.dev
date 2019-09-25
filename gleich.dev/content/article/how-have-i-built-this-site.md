@@ -311,7 +311,7 @@ So long a little workaround helps:
       - | 
         echo "Check if "${BRANCH_NAME}" is valid for dev deployment"
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
-        gcloud beta run deploy dev-<MYSITE> --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
+        gcloud beta run deploy dev-<MYSITE> --image gcr.io/${PROJECT_ID}/<MYSITE>:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=dev,URL=https://test.<MYSITE>/ \
         --memory=256Mi --allow-unauthenticated
   - id: Deploy prod
@@ -322,7 +322,7 @@ So long a little workaround helps:
       - | 
         echo "Check if "${BRANCH_NAME}" is valid for prod deployment"
         [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod deployment"; exit 0; };
-        gcloud beta run deploy <MYSITE> --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
+        gcloud beta run deploy <MYSITE> --image gcr.io/${PROJECT_ID}/<MYSITE>:${SHORT_SHA} \
         --region europe-west1 --platform managed --set-env-vars=ENV=prod,URL=https://<MYSITE>/ \
         --allow-unauthenticated --memory=256Mi
 ```
