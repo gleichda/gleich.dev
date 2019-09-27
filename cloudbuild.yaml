@@ -1,13 +1,24 @@
 steps:
-  - id: Build dockerfile
+  - id: Build dockerfile for dev
     name: gcr.io/cloud-builders/docker
+    entrypoint: bash
     args:
-      - build
-      - --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
-      - --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
-      - --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest
-      - --file=build/Dockerfile
-      - .
+      - -c
+      - |
+        [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev build"; exit 0; };
+        docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME} \
+        --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest \
+        --build-arg	hugo_args="-D" --file=build/Dockerfile .
+  - id: Build dockerfile for prod
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod build"; exit 0; };
+        docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME} \
+        --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest \
+        --file=build/Dockerfile .
   - id: Push Image
     name: gcr.io/cloud-builders/docker
     args:
@@ -22,8 +33,7 @@ steps:
         echo "Check if "${BRANCH_NAME}" is valid for dev deployment"
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
         gcloud beta run deploy dev-gleichdev --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
-        --region europe-west1 --platform managed --set-env-vars=ENV=dev,URL=https://test.gleich.dev/ \
-        --allow-unauthenticated --memory=256Mi 
+        --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi 
   - id: Deploy prod
     name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
@@ -33,8 +43,7 @@ steps:
         echo "Check if "${BRANCH_NAME}" is valid for prod deployment"
         [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod deployment"; exit 0; };
         gcloud beta run deploy gleichdev --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
-        --region europe-west1 --platform managed --set-env-vars=ENV=prod,URL=https://www.gleich.dev/ \
-        --allow-unauthenticated --memory=256Mi
+        --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi
 
 images:
   - gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
