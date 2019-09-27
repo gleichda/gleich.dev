@@ -7,7 +7,7 @@ theme = "m10c"
 [params]
   author = "David Gleich"
   description = "This is my small site. I'm a 25 year programmer/system engineer working at MediaMarktSaturn in Ingolstadt"
-
+  avatar = "img/avatar.jpg"
     [[params.social]]
         name = "github"
         url = "https://github.com/gleichda"
