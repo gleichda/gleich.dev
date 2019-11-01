@@ -6,9 +6,8 @@ steps:
       - -c
       - |
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev build"; exit 0; };
-        docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME} \
-        --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest \
-        --build-arg	hugo_args="-D" --file=build/Dockerfile .
+        docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
+        --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest --build-arg	hugo_args="-D" --file=build/Dockerfile . \
   - id: Build dockerfile for prod
     name: gcr.io/cloud-builders/docker
     entrypoint: bash
@@ -16,9 +15,8 @@ steps:
       - -c
       - |
         [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod build"; exit 0; };
-        docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME} \
-        --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest \
-        --file=build/Dockerfile .
+        docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
+        --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest --file=build/Dockerfile .
   - id: Push Image
     name: gcr.io/cloud-builders/docker
     args:
@@ -46,7 +44,6 @@ steps:
         --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi
 
 images:
-  - gcr.io/${PROJECT_ID}/gleich.dev:${BRANCH_NAME}
   - gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
   - gcr.io/${PROJECT_ID}/gleich.dev:latest
   
