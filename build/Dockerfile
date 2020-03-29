@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-ARG HUGO_VERSION="0.60.1"
+ARG HUGO_VERSION="0.68.3"
 ARG hugo_args=""
 
 ADD https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz /
