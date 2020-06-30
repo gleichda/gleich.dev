@@ -12,7 +12,7 @@ RUN /hugo ${hugo_args}
 
 
 
-FROM busybox:1.31.1
+FROM busybox:1.32.0
 ENV PORT 8080
 COPY --from=downloader /binaries/* /usr/bin/
 COPY --from=downloader /gleich.dev/public /public
