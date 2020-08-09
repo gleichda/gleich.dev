@@ -6,7 +6,7 @@ canonifyURLs = false
 theme = "m10c"
 [params]
   author = "David Gleich"
-  description = "This is my small site. I'm a 25 year old system engineer and paramedic working at MediaMarktSaturn in Ingolstadt"
+  description = "This is my small site. I'm a 25 year old system engineer and paramedic working at MediaMarktSaturn in Ingolstadt. Certified Associate Cloud Engineer and Professional Cloud Architect"
   avatar = "img/avatar.jpg"
     [[params.social]]
         name = "github"
@@ -14,3 +14,9 @@ theme = "m10c"
     [[params.social]]
         name = "medium"
         url = "https://medium.com/@themirgleich"
+    [[params.social]]
+        name = "linkedin"
+        url = "https://www.linkedin.com/in/david-gleich-500ab918a/"
+    [[params.social]]
+        name = "key"
+        url = "https://www.credential.net/profile/davidgleich/wallet"
