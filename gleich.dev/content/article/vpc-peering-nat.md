@@ -19,6 +19,18 @@ Spoiler: You still need the VM but you don't need to assign a public IP to it.
 
 # The Setup
 
+## Prerequestites
+
+Prepare your gcloud command line with some defaults:
+
+```shell script
+gcloud config set compute/region <YOUR REGION>
+# Set a zone within that region for the VMs
+gcloud config set compute/zone <YOUR ZONE>
+
+
+```
+
 ## How will it look like
 
 ![Setup Graph](/img/vpc-peering-nat/base-setup.png)
@@ -72,3 +84,48 @@ gcloud compute routes list --filter='(network=vpc-1 AND nextHopGateway=default-i
 # Now delete the route
 gcloud compute routes delete <YOUR ROUTE NAME>
 ```
+
+### Setup the Cloud NAT in VPC 2
+
+```shell script
+# Create the Router for Cloud NAT
+gcloud compute routers create nat-router --network=vpc-2
+
+# Create the Cloud NAT
+gcloud compute routers nats create vpc-2-nat --router=nat-router --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges
+```
+
+### Create Firewall Rules to access the VMs over SSH
+
+For accessing the VMs without an external IP you can go use the [Identity Aware Proxy with TCP forwarding](https://cloud.google.com/iap/docs/using-tcp-forwarding).
+
+:warning: **Th
+
+```shell script
+gcloud compute firewall-rules create ssh-iap-ingress-vpc-1 --source-ranges 35.235.240.0/20 --allow=tcp:22 --network vpc-1 
+gcloud compute firewall-rules create ssh-iap-ingress-vpc-2 --source-ranges 35.235.240.0/20 --allow=tcp:22 --network vpc-2
+```
+
+### Setup a VM in each network
+
+For the VM in VPC 2 we must make sure that it allows [IP orwarding](https://cloud.google.com/sdk/gcloud/reference/compute/instances/create#--can-ip-forward).
+
+```shell script
+# VM in VPC 1
+gcloud compute instances create test-vm --machine-type=n1-standard-1 --image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts --network=vpc-1 --no-address --subnet=subnet-1
+
+# VM  in VPC 2
+gcloud compute instances create nat-vm --machine-type=n1-standard-1 --image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts --network=vpc-2 --no-address --subnet=subnet-2 --can-ip-forward
+```
+
+### Connection test
+
+Now SSH into both vms and try to ping some website or something.
+I like to use [`1.1.1.1`](https://1.1.1.1/dns/) in this case. Just to make sure that it does not interfere with some Google IP ranges.
+(Talking about [Private Google Access](https://cloud.google.com/vpc/docs/private-access-options#pga) for example.) 
+
+Now you can see that the NAT VM already has internet access but the test VM is not able to reach the WWW.
+
+![First Ping NAT VM](/img/vpc-peering-nat/first-ping-natvm.png)
+![First Ping test VM](/img/vpc-peering-nat/first-ping-testvm.png)
+
