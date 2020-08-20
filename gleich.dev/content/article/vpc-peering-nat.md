@@ -99,7 +99,7 @@ gcloud compute routers nats create vpc-2-nat --router=nat-router --auto-allocate
 
 For accessing the VMs without an external IP you can go use the [Identity Aware Proxy with TCP forwarding](https://cloud.google.com/iap/docs/using-tcp-forwarding).
 
-:warning: **Th
+⚠️ ⚠️ This firewall rules allow IAP access for all instances in your networks. In production use firewall tags! ⚠️ ⚠️
 
 ```shell script
 gcloud compute firewall-rules create ssh-iap-ingress-vpc-1 --source-ranges 35.235.240.0/20 --allow=tcp:22 --network vpc-1 
@@ -112,10 +112,10 @@ For the VM in VPC 2 we must make sure that it allows [IP orwarding](https://clou
 
 ```shell script
 # VM in VPC 1
-gcloud compute instances create test-vm --machine-type=n1-standard-1 --image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts --network=vpc-1 --no-address --subnet=subnet-1
+gcloud compute instances create test-vm --machine-type=n1-standard-1 --image-project=ubuntu-os-cloud --image-family=ubuntu-1804-lts --network=vpc-1 --no-address --subnet=subnet-1
 
 # VM  in VPC 2
-gcloud compute instances create nat-vm --machine-type=n1-standard-1 --image-project=ubuntu-os-cloud --image-family=ubuntu-2004-lts --network=vpc-2 --no-address --subnet=subnet-2 --can-ip-forward
+gcloud compute instances create nat-vm --machine-type=n1-standard-1 --image-project=ubuntu-os-cloud --image-family=ubuntu-1804-lts --network=vpc-2 --no-address --subnet=subnet-2 --can-ip-forward
 ```
 
 ### Connection test
@@ -129,3 +129,41 @@ Now you can see that the NAT VM already has internet access but the test VM is n
 ![First Ping NAT VM](/img/vpc-peering-nat/first-ping-natvm.png)
 ![First Ping test VM](/img/vpc-peering-nat/first-ping-testvm.png)
 
+### Now configure the NAT for the second VPC
+
+#### Configure the VM to do IP forwarding
+
+This is a mostly taken from the [Google BMS Setup](https://cloud.google.com/bare-metal/docs/bms-setup#bms-access-internet-vm-nat).
+But instead of configuring everything we just add a small startup script:
+
+```shell script
+gcloud compute instances add-metadata nat-vm --metadata=startup-script=$'sysctl -w net.ipv4.ip_forward=1 && iptables -t nat -A POSTROUTING -o $(/sbin/ifconfig | head -1 | awk -F: {\'print $1\'}) -j MASQUERADE'
+
+# Restart the VM afterwards to apply your changes
+gcloud compute instances stop nat-vm && gcloud compute instances start nat-vm
+```
+
+#### Configure a route that is going to be propagated over the VPC Peering
+
+To access the test VM to access the Internet over the NAT VM we need to create a route that is propagated over the VPC Peering.
+This is not happening the `Default route to the Internet` as Google states [here](https://cloud.google.com/vpc/docs/vpc-peering#considerations).
+
+So create a custom route to the internet over the NAT VM. The most important point is that the route has a lower priority than the `Default route to the Internet`
+
+```shell script
+gcloud compute routes create vpc-nat-route --network=vpc-2 --priority=10000 --next-hop-instance=nat-vm --destination-range 0.0.0.0/0
+```
+
+And allow ingress traffic from VPC 1 to the NAT VM. 
+
+⚠️ ⚠️ This firewall rule will allow ingress for all instances on all IPs in VPC 2. In production use firewall tags! ⚠️ ⚠️
+
+For production you definitely should work with tags again but for demo purposes allowing for all instances is fine.
+
+```shell script
+gcloud compute firewall-rules create nat-ingress --source-ranges  <IP RANGE FROM VPC 1> --allow=all --network=vpc-2
+```
+
+## Congratulations your VM has internet access now
+
+![Final Ping test VM](/img/vpc-peering-nat/final-ping-testvm.png)
