@@ -1,7 +1,7 @@
 ---
 title: "How to use Cloud NAT with VPC Peering"
 date: 2020-08-11T14:26:58+02:00
-draft: true
+draft: false
 ---
 
 # Why should I want that
