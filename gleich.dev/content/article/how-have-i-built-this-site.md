@@ -47,7 +47,7 @@ code-server --no-auth --port 8080 --disable-telemetry .
 
 Open the Preview on port 8080. If you get an `Not Found` error just remove the `?authuser=0` from the URL and you have your code-server running in cloud shell.
 
-![Open Web Preview](/img/cloud-shell-preview.png)
+![Open Web Preview](/img/site-build/cloud-shell-preview.png)
 
 ## Create your site with Hugo
 
@@ -106,7 +106,7 @@ hugo serve --port 2345 -D
 The `-D` also serves the draft content which is useful for creating new content.
 Change the Port on the web preview to 2345 and open the preview.
 
-![Change Port and Open Web Preview](/img/cloud-shell-preview.png)
+![Change Port and Open Web Preview](/img/site-build/cloud-shell-preview.png)
 
 It's the same here. If you get an error remove the `?authuser=0` from the URL and it should work.
 
@@ -226,12 +226,12 @@ If this changes it will be overwritten on the container startup by Google Cloud 
 
 Go to the [Google Cloud Platform](https://console.cloud.google.com) and create your project.
 
-![New Project](/img/new-project.png)
+![New Project](/img/site-build/new-project.png)
 
 Enable the Cloud Build and Cloud Run API.
 For that open the Hamburger Menu on the left side and click on `Cloud Build`.
 
-![Cloud Build API](/img/cloud-build-api.png)
+![Cloud Build API](/img/site-build/cloud-build-api.png)
 
 For Cloud Run its a bit different.
 Go to `Cloud Run` in the Hamburger Menu. Then click on `START USING CLOUD RUN`.
@@ -294,7 +294,7 @@ Therefor you have to grant the Cloud Build Service Account the `Cloud Run Admin`
 To do that go to the `Settings` section for `Cloud Build` in the Google Cloud Console.
 And set the two roles to enabled.
 
-![Cloud Build Permissions](/img/cloud-build-settings.png)
+![Cloud Build Permissions](/img/site-build/cloud-build-settings.png)
 
 
 ### Connect your GitHub Repo with Cloud Build
@@ -302,7 +302,7 @@ And set the two roles to enabled.
 Go to the [Google Cloud Build Marketplace App](https://github.com/marketplace/google-cloud-build) and configure it.
 After authotizing Google Cloud for accessing your GitHub repository you can link your repo to your Build.
 
-![Cloud Build API](/img/cloud-build-github.png)
+![Cloud Build API](/img/site-build/cloud-build-github.png)
 
 Now after every commit you will get the latest version installed automatically.
 
