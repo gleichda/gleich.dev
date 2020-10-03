@@ -1,12 +1,12 @@
 languageCode = "en-us"
-title = "About Me"
+title = "David Gleich"
 relativeURLs = true
 canonifyURLs = false
 
 theme = "m10c"
 [params]
   author = "David Gleich"
-  description = "This is my small site. I'm a 25 year old system engineer and paramedic working at MediaMarktSaturn in Ingolstadt. Certified Associate Cloud Engineer and Professional Cloud Architect"
+  description = "This is my small site. I'm a 26 year old system engineer and paramedic working at MediaMarktSaturn in Ingolstadt. Certified Associate Cloud Engineer and Professional Cloud Architect"
   avatar = "img/avatar.jpg"
     [[params.social]]
         name = "github"
@@ -20,3 +20,9 @@ theme = "m10c"
     [[params.social]]
         name = "key"
         url = "https://www.credential.net/profile/davidgleich/wallet"
+
+[menu]
+    [[menu.main]]
+        identifier = "certificates"
+        name = "My Certificates"
+        url  = "/certificates/"
