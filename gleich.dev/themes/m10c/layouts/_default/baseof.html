@@ -21,9 +21,8 @@
       <h1>{{ .Site.Title }}</h1>
       {{- with .Site.Menus.main }}
       <nav class="app-header-menu">
-        -
         {{- range . }}
-          <a href="{{ .URL }}">{{ .Name }}</a> -
+        <a href="{{ .URL }}">{{ .Name }}</a><br>
         {{- end }}
       </nav>
       {{- end }}
