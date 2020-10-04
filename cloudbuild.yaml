@@ -46,7 +46,7 @@ steps:
         [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod deployment"; exit 0; };
         gcloud beta run deploy gleichdev --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
         --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi \
-        --set-env-vars=BASE_DOMAIN=test.gleich.dev --concurrency=80 --max-instances=10
+        --concurrency=80 --max-instances=10
 
 images:
   - gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
