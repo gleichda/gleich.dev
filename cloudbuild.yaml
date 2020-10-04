@@ -8,6 +8,7 @@ steps:
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev build"; exit 0; };
         docker build --tag=gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
         --tag=gcr.io/${PROJECT_ID}/gleich.dev:latest --build-arg	hugo_args="-D" --file=build/Dockerfile . \
+
   - id: Build dockerfile for prod
     name: gcr.io/cloud-builders/docker
     entrypoint: bash
@@ -22,6 +23,7 @@ steps:
     args:
       - push
       - gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
+
   - id: Deploy dev
     name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
@@ -31,7 +33,9 @@ steps:
         echo "Check if "${BRANCH_NAME}" is valid for dev deployment"
         [[  "${BRANCH_NAME}" != "master" ]] || { echo "Skipping dev deployment"; exit 0; };
         gcloud beta run deploy dev-gleichdev --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
-        --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi 
+        --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi \
+        --set-env-vars=BASE_DOMAIN=test.gleich.dev --concurrency=80 --max-instances=1
+
   - id: Deploy prod
     name: gcr.io/cloud-builders/gcloud
     entrypoint: bash
@@ -41,7 +45,8 @@ steps:
         echo "Check if "${BRANCH_NAME}" is valid for prod deployment"
         [[  "${BRANCH_NAME}" == "master" ]] || { echo "Skipping prod deployment"; exit 0; };
         gcloud beta run deploy gleichdev --image gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA} \
-        --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi
+        --region europe-west1 --platform managed --allow-unauthenticated --memory=256Mi \
+        --set-env-vars=BASE_DOMAIN=test.gleich.dev --concurrency=80 --max-instances=10
 
 images:
   - gcr.io/${PROJECT_ID}/gleich.dev:${SHORT_SHA}
