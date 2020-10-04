@@ -1,0 +1,28 @@
+# Run in foreground
+daemon off;
+
+events {
+    worker_connections  1024;
+}
+http {
+  # Include Mime Types
+  include /etc/nginx/mime.types;
+
+  access_log /dev/stdout;
+  error_log /dev/stderr;
+
+  server {
+    listen ${PORT};
+    server_name _;
+    return 301 https://${BASE_DOMAIN}$request_uri;
+  }
+
+  server {
+    listen ${PORT};
+    server_name ${BASE_DOMAIN};
+    location / {
+      root /public;
+      index index.html;
+    }
+  }
+}
