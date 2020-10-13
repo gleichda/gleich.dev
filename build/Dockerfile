@@ -1,5 +1,5 @@
 FROM alpine:latest as downloader
-ARG HUGO_VERSION="0.75.1"
+ARG HUGO_VERSION="0.76.4"
 ARG hugo_args=""
 
 ADD https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz /
@@ -8,7 +8,7 @@ COPY gleich.dev /gleich.dev
 WORKDIR /gleich.dev
 RUN /hugo ${hugo_args}
 
-FROM nginx:stable-alpine
+FROM nginx:1.19.3-alpine
 ENV PORT 8080
 ENV BASE_DOMAIN www.gleich.dev
 COPY --from=downloader /gleich.dev/public /public
