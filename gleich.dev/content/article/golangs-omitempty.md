@@ -1,10 +1,10 @@
 ---
 title: "How Golang's omitempty can confuse the (Google) APIs"
 date: 2021-01-14T07:51:22+01:00
-draft: true
+draft: true****
 ---
 
-# First thoughts
+## First thoughts
 
 ![Google Go Meme](/img/golang/GoGoogleMeme.jpg)
 
@@ -12,7 +12,7 @@ And this is also the reason we decided to do most of our programming in Go.
 But sometimes we stumbled over some pitfalls. 
 (Also referring to [the post of a colleague](https://medium.com/@kunzese/gcp-cloud-nat-golangs-http-client-65528ec86e) some times ago)
 
-# What does the omitempty option exactly?
+## What does the omitempty option exactly?
 
 When building JSON Structs you often have fields that are optional.
 To reduce the unnecessary transmission size in case you are calling some JOSN/REST APIs these fields don't need to be sent.
@@ -29,9 +29,9 @@ type Customer struct {
 }
 ```
 
-# Where does the confusion now come from?
+## Where does the confusion now come from?
 
-## Parsing JSON to Go Structs
+### Parsing JSON to Go Structs
 
 So creating a few different customers which could look like:
 
@@ -67,7 +67,7 @@ Jane: `{Name:Doe FirstName:Jane CreditCardNumber: Active:false}`
 
 Joe: `{Name:Bloggs FirstName:Joe CreditCardNumber: Active:false}`
 
-## Parsing back to JSON
+### Parsing back to JSON
 
 So parsing the structs back to JSON will result in the following JSONs:
 
@@ -104,7 +104,7 @@ The "omitempty" option specifies that the field should be omitted from the encod
 
 So as `false` is the default boolean value it is just omitted.
 
-# What's the Problem with that now?
+## What's the Problem with that now?
 
 When doing the PATCH request Google (and probably many other APIs) only updated the sent fields.
 This means that disabling a Customer with the Patch Field won't work here.
@@ -133,7 +133,7 @@ IAPConfig := compute.BackendServiceIAP{
 }
 ```
 
-# What can you as an API Client Maintainer do to don't have that issue
+## What can you as an API Client Maintainer do to don't have that issue
 
 As long as you don't use the Boolean directly but use a Pointer this is no issue as for a Pointers the default is `nil`.
 There is also a [Issue in the Go Repo](https://github.com/golang/go/issues/13284) for further reading.
