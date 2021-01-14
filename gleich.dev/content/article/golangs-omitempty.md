@@ -115,3 +115,8 @@ Each Struct of the [Google API Package](https://pkg.go.dev/google.golang.org/api
 ```
 
 (Taken from [BackendServiceIAP](https://pkg.go.dev/google.golang.org/api/compute/v1#BackendServiceIAP) as we found the issue there)
+
+# What can you as an API Client Maintainer do to don't have that issue
+
+As long as you don't use the Boolean directly but use a Pointer this is no issue as for a Pointers the default is `nil`.
+There is also a [Issue in the Go Repo](https://github.com/golang/go/issues/13284) for further reading.
