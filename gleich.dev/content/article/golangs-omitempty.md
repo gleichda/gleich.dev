@@ -1,7 +1,7 @@
 ---
 title: "How Golang's omitempty can confuse the (Google) APIs"
 date: 2021-01-14T07:51:22+01:00
-draft: true****
+draft: false
 ---
 
 ## First thoughts
