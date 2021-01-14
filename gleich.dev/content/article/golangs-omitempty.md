@@ -22,10 +22,10 @@ So a sample Go struct could look like below:
 
 ```go
 type Customer struct {
-Name             string `json:"name"`
-FirstName        string `json:"firstName"`
-CreditCardNumber string `json:"creditCardNumber,omitempty"`
-Active           bool   `json:"active,omitempty"`
+    Name             string `json:"name"`
+    FirstName        string `json:"firstName"`
+    CreditCardNumber string `json:"creditCardNumber,omitempty"`
+    Active           bool   `json:"active,omitempty"`
 }
 ```
 
