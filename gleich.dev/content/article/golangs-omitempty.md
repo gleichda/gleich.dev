@@ -4,6 +4,14 @@ date: 2021-01-14T07:51:22+01:00
 draft: true
 ---
 
+# First thoughts
+
+![Google Go Meme](/img/golang/GoGoogleMeme.jpg)
+
+And this is also the reason we decided to do most of our programming in Go.
+But sometimes we stumbled over some pitfalls. 
+(Also referring to [the post of a colleague](https://medium.com/@kunzese/gcp-cloud-nat-golangs-http-client-65528ec86e) some times ago)
+
 # What does the omitempty option exactly?
 
 When building JSON Structs you often have fields that are optional.
@@ -129,3 +137,6 @@ IAPConfig := compute.BackendServiceIAP{
 
 As long as you don't use the Boolean directly but use a Pointer this is no issue as for a Pointers the default is `nil`.
 There is also a [Issue in the Go Repo](https://github.com/golang/go/issues/13284) for further reading.
+
+So after explaining all that to you, I guess you already noticed that this was not an easy pick.
+Together with support from my colleague (thanks for that btw) it took me about 5 hours to find that issue and fix it.
