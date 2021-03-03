@@ -8,7 +8,7 @@ COPY gleich.dev /gleich.dev
 WORKDIR /gleich.dev
 RUN /hugo ${hugo_args}
 
-FROM nginx:1.19.6-alpine
+FROM nginx:1.19.7-alpine
 ENV PORT 8080
 ENV BASE_DOMAIN www.gleich.dev
 COPY --from=downloader /gleich.dev/public /public
