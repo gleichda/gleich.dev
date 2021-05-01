@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+
+env:
+  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.82.1'
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy to Netlify (dev)
+        uses: nwtgck/actions-netlify@v1.1
+        id: netlify
+        with:
+          publish-dir: './public'
+          production-deploy: false
+          github-deployment-environment: 'dev'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        timeout-minutes: 1
+
+      - name: Deploy to Netlify (prod)
+        if: github.ref == 'refs/heads/master'
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './public'
+          production-deploy: true
+          github-deployment-environment: 'prod'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        timeout-minutes: 1
