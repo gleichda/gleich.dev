@@ -35,6 +35,16 @@ jobs:
           overwrites-pull-request-comment: true
         timeout-minutes: 1
 
+      - name: Audit URLs using Lighthouse
+        uses: treosh/lighthouse-ci-action@7.0.0
+        with:
+          urls: |
+            ${{ steps.netlify.outputs.deploy-url }}
+            ${{ steps.netlify.outputs.deploy-url }}/certificates/
+            ${{ steps.netlify.outputs.deploy-url }}/article/golangs-omitempty/
+          budgetPath: ./.github/lighthouse/budget.json
+          uploadArtifacts: true
+
       - name: Deploy to Netlify (prod)
         if: github.ref == 'refs/heads/master'
         uses: nwtgck/actions-netlify@v1.1
