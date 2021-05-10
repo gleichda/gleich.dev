@@ -22,7 +22,7 @@ jobs:
         run: hugo --minify
 
       - name: Deploy to Netlify (dev)
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2.2
         id: netlify
         with:
           publish-dir: './public'
@@ -47,7 +47,7 @@ jobs:
 
       - name: Deploy to Netlify (prod)
         if: github.ref == 'refs/heads/master'
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2.2
         with:
           publish-dir: './public'
           production-deploy: true
