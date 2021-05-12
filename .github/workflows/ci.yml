@@ -22,7 +22,7 @@ jobs:
         run: hugo --minify
 
       - name: Deploy to Netlify (dev)
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2.1
         id: netlify
         with:
           publish-dir: './public'
@@ -33,6 +33,7 @@ jobs:
           enable-pull-request-comment: false
           enable-commit-comment: true
           overwrites-pull-request-comment: true
+          fails-without-credentials: true
         timeout-minutes: 1
 
       - name: Audit URLs using Lighthouse
@@ -47,7 +48,7 @@ jobs:
 
       - name: Deploy to Netlify (prod)
         if: github.ref == 'refs/heads/master'
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2.1
         with:
           publish-dir: './public'
           production-deploy: true
@@ -57,4 +58,5 @@ jobs:
           enable-pull-request-comment: false
           enable-commit-comment: true
           overwrites-pull-request-comment: true
+          fails-without-credentials: true
         timeout-minutes: 1
